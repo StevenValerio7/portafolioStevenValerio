@@ -93,7 +93,11 @@
             <artifactId>webjars-locator</artifactId>
             <version>0.52</version>
         </dependency>
-
+ <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.5.0</version>
+            </dependency>
         <!-- Dependencias de testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

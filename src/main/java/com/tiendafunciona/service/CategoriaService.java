@@ -12,15 +12,24 @@ public class CategoriaService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
-    
-    @Transactional(readOnly=true)
-    public List<Categoria> getCategorias(boolean activo) {
-        if (activo) {
-            return categoriaRepository.findByActivoTrue();
-        }
+
+    @Transactional(readOnly = true)
+    public List<Categoria> listarCategorias() {
         return categoriaRepository.findAll();
     }
-    
-    
-}
 
+    @Transactional(readOnly = true)
+    public Categoria obtenerPorId(Long id) {
+        return categoriaRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public Categoria guardar(Categoria categoria) {
+        return categoriaRepository.save(categoria);
+    }
+
+    @Transactional
+    public void eliminar(Long id) {
+        categoriaRepository.deleteById(id);
+    }
+}
