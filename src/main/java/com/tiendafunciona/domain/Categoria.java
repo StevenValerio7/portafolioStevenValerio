@@ -1,46 +1,28 @@
 package com.tiendafunciona.domain;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import lombok.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-@Data
 @Entity
-@Table(name = "categoria")
-public class Categoria implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Categoria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_categoria")
-    private Long idCategoria; // Usamos Long, consistente con el repositorio
-
-    @NotBlank(message = "La descripción no puede estar vacía")
-    @Size(max = 50, message = "La descripción no puede exceder los 50 caracteres")
-    @Column(length = 50, nullable = false, unique = true)
+    private Long idCategoria;
+    private String nombre;
     private String descripcion;
-
-    @Size(max = 1024, message = "La ruta de la imagen no puede exceder los 1024 caracteres")
-    @Column(name = "ruta_imagen", length = 1024)
-    private String rutaImagen;
-
-    @Column(nullable = false)
     private boolean activo;
-
-    @Column(name = "fecha_creacion", updatable = false, insertable = false)
-    private LocalDateTime fechaCreacion;
-
-    @Column(name = "fecha_modificacion", insertable = false, updatable = false)
-    private LocalDateTime fechaModificacion;
 
     public Categoria() {}
 
-    public Categoria(String descripcion, boolean activo) {
-        this.descripcion = descripcion;
-        this.activo = activo;
-    }
+    public Long getIdCategoria() { return idCategoria; }
+    public void setIdCategoria(Long idCategoria) { this.idCategoria = idCategoria; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public boolean isActivo() { return activo; }
+    public void setActivo(boolean activo) { this.activo = activo; }
 }
