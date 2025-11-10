@@ -73,8 +73,7 @@
                                         <tr th:each="c : ${categorias}">
                                             <td>[[${c.idCategoria}]]</td>
                                             <td>[[${c.descripcion}]]</td>
-                                            <!-- ✅ CORREGIDO: Sin @{} para que Thymeleaf lea la ruta directamente -->
-                                            <td><img th:src="${c.rutaImagen}" alt="noData" height="75"/></td>
+                                            <td><img th:src="@{${c.rutaImagen}}" alt="noData" height="75"/></td>
                                             <td th:text="${c.activo} ? 'Activa':'Inactiva'"></td>
                                             <td>
                                                 <button type="button" class="btn btn-danger"
@@ -142,8 +141,7 @@
                                             <label for="imagen">[[#{categoria.imagen}]]</label>
                                             <input class="form-control" type="file" name="imagenFile"
                                                    onchange="mostrarImagen(this);" />
-                                            <!-- ✅ CORREGIDO: Sin @{} para que Thymeleaf lea la ruta directamente -->
-                                            <img id="blah" th:src="${categoria.rutaImagen}" alt="your image" height="200"/>
+                                            <img id="blah" th:src="@{${categoria.rutaImagen}}" alt="your image" height="200"/>
                                         </div>
                                     </div>
                                 </div>
@@ -163,51 +161,30 @@
                  aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered custom-modal-animation">
                     <div class="modal-content animate-slide-up">
-                        <!-- ✅ CORREGIDO: Usa GET en lugar de POST, y la URL correcta con parámetro {id} -->
-                        <a id="eliminarLink" class="d-none"></a>
-                        <div class="modal-header bg-warning text-white">
-                            <h5 class="modal-title" id="modalLabel">
-                                <i class="fa-solid fa-circle-radiation"></i> [[#{accion.confirmar}]]
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>[[#{accion.confirmar.texto1}]] <span id="modalDescripcion"></span>?</p>
-                            <h6>[[#{accion.confirmar.texto2}]]</h6>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" id="btnEliminar">
-                                <i class="fa-solid fa-trash"></i> [[#{accion.eliminar}]]
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]
-                            </button>
-                        </div>
+                        <form th:action="@{/categoria/eliminar}" th:object="${categoria}" method="post">
+                            <input type="hidden" name="idCategoria" id="modalId"/>
+                            <div class="modal-header bg-warning text-white">
+                                <h5 class="modal-title" id="modalLabel">
+                                    <i class="fa-solid fa-circle-radiation"></i> [[#{accion.confirmar}]]
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>[[#{accion.confirmar.texto1}]] <span id="modalDescripcion"></span>?</p>
+                                <h6>[[#{accion.confirmar.texto2}]]</h6>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fa-solid fa-trash"></i> [[#{accion.eliminar}]]
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-
-            <!-- Script para manejar la eliminación -->
-            <script>
-                const confirmModal = document.getElementById('confirmModal');
-                if (confirmModal) {
-                    confirmModal.addEventListener('show.bs.modal', function (event) {
-                        const button = event.relatedTarget;
-                        const id = button.getAttribute('data-bs-id');
-                        const descripcion = button.getAttribute('data-bs-descripcion');
-                        
-                        document.getElementById('modalDescripcion').textContent = descripcion;
-                        
-                        const eliminarLink = document.getElementById('eliminarLink');
-                        eliminarLink.href = '/categoria/eliminar/' + id;
-                        
-                        const btnEliminar = document.getElementById('btnEliminar');
-                        btnEliminar.onclick = function() {
-                            window.location.href = eliminarLink.href;
-                        };
-                    });
-                }
-            </script>
         </section>
 
     </body>

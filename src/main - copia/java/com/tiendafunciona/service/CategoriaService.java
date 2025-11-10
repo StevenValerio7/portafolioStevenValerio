@@ -19,7 +19,7 @@ public class CategoriaService {
     @Autowired
     private CategoriaRepository categoriaRepository;
     
-    // ✅ RUTA CORRECTA - Dentro del proyecto, en la carpeta static
+    // Ruta donde se guardarán las imágenes
     private final String UPLOAD_DIR = "src/main/resources/static/images/categorias/";
     
     @Transactional(readOnly = true)
@@ -49,7 +49,6 @@ public class CategoriaService {
                 File uploadDir = new File(UPLOAD_DIR);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
-                    System.out.println("✅ Directorio creado: " + uploadDir.getAbsolutePath());
                 }
                 
                 // Generar nombre único para la imagen
@@ -59,15 +58,11 @@ public class CategoriaService {
                 // Guardar archivo
                 Files.write(rutaArchivo, imagenFile.getBytes());
                 
-                // ✅ IMPORTANTE: Guardar ruta relativa para que el navegador pueda acceder
-                // Esta ruta es accesible por http://localhost:9090/images/categorias/archivo.jpg
+                // Guardar solo la ruta en la base de datos
                 categoria.setRutaImagen("/images/categorias/" + nombreArchivo);
                 
-                System.out.println("✅ Imagen guardada exitosamente: " + rutaArchivo.toAbsolutePath());
-                System.out.println("✅ Ruta en BD: /images/categorias/" + nombreArchivo);
-                
             } catch (IOException e) {
-                System.err.println("❌ Error al guardar la imagen: " + e.getMessage());
+                System.err.println("Error al guardar la imagen: " + e.getMessage());
                 e.printStackTrace();
             }
         }

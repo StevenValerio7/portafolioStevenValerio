@@ -11,9 +11,9 @@ public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCategoria;
-    // ❌ ELIMINA: private String nombre;
-    private String descripcion;  // ✅ MANTÉN SOLO ESTE
-    private String rutaImagen;
+    private String nombre;
+    private String descripcion;
+    private String rutaImagen;  // CAMPO NUEVO
     private boolean activo;
     
     public Categoria() {}
@@ -26,7 +26,13 @@ public class Categoria {
         this.idCategoria = idCategoria; 
     }
     
-    // ❌ ELIMINA: getNombre() y setNombre()
+    public String getNombre() { 
+        return nombre; 
+    }
+    
+    public void setNombre(String nombre) { 
+        this.nombre = nombre; 
+    }
     
     public String getDescripcion() { 
         return descripcion; 
@@ -36,6 +42,7 @@ public class Categoria {
         this.descripcion = descripcion; 
     }
     
+    // GETTERS Y SETTERS NUEVOS
     public String getRutaImagen() { 
         return rutaImagen; 
     }
