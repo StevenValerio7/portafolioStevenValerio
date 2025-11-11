@@ -1,5 +1,4 @@
 package com.tiendafunciona.domain;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -18,7 +17,9 @@ public class Producto implements Serializable {
     @Column(name = "id_producto")
     private Integer idProducto;
     
-    private Integer idCategoria;
+    @ManyToOne
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
     
     @Column(nullable = false, length = 50)
     @NotBlank(message = "La descripción no puede estar vacía.")
@@ -41,14 +42,4 @@ public class Producto implements Serializable {
     private String rutaImagen;
     
     private boolean activo;
-    
-    // Getter para idProducto (necesario para ProductoService)
-    public Integer getIdProducto() {
-        return idProducto;
-    }
-    
-    // Setter para rutaImagen (necesario para ProductoService)
-    public void setRutaImagen(String rutaImagen) {
-        this.rutaImagen = rutaImagen;
-    }
 }

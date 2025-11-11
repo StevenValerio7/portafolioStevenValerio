@@ -1,12 +1,85 @@
-<html>
-    <head th:replace="~{general/fragmentos :: head}"/>
-
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>TechShop - Producto</title>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .header-green {
+                background-color: #28a745;
+                color: white;
+                padding: 20px;
+                text-align: center;
+            }
+        </style>
+    </head>
     <body>
-        <header th:replace="~{general/fragmentos :: header}"/>
-
-        <section th:replace="~{producto/fragmentos :: editar}"/>
-        <section th:replace="~{general/fragmentos :: mostrarToast}"/>
-
-        <footer th:replace="~{general/fragmentos :: footer}"/>
+        <div class="header-green">
+            <h2>Su tienda en línea</h2>
+        </div>
+        
+        <div class="container mt-4">
+            <h3 th:if="${producto.idProducto == null}">Agregar Producto</h3>
+            <h3 th:if="${producto.idProducto != null}">Modificar Producto</h3>
+            
+            <form th:action="@{/producto/guardar}" method="post" enctype="multipart/form-data" th:object="${producto}">
+                
+                <input type="hidden" th:field="*{idProducto}">
+                <input type="hidden" th:field="*{rutaImagen}">
+                
+                <div class="mb-3">
+                    <label for="categoria" class="form-label">Categoría:</label>
+                    <select class="form-select" id="categoria" th:field="*{categoria.idCategoria}" required>
+                        <option value="">Seleccione una categoría</option>
+                        <option th:each="cat : ${categorias}" 
+                                th:value="${cat.idCategoria}" 
+                                th:text="${cat.descripcion}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción:</label>
+                    <input type="text" class="form-control" id="descripcion" 
+                           th:field="*{descripcion}" required maxlength="50">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="detalle" class="form-label">Detalle:</label>
+                    <textarea class="form-control" id="detalle" 
+                              th:field="*{detalle}" rows="3"></textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="precio" class="form-label">Precio:</label>
+                    <input type="number" class="form-control" id="precio" 
+                           th:field="*{precio}" step="0.01" min="0.01" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="existencias" class="form-label">Existencias:</label>
+                    <input type="number" class="form-control" id="existencias" 
+                           th:field="*{existencias}" min="0" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="imagenFile" class="form-label">Imagen:</label>
+                    <input type="file" class="form-control" id="imagenFile" 
+                           name="imagenFile" accept="image/*">
+                    <small class="form-text text-muted" th:if="${producto.rutaImagen != null}">
+                        Imagen actual: <span th:text="${producto.rutaImagen}"></span>
+                    </small>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="activo" 
+                           th:field="*{activo}">
+                    <label class="form-check-label" for="activo">Activo</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/producto/listado" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
     </body>
 </html>

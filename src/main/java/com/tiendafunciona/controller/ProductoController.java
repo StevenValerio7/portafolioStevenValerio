@@ -1,5 +1,4 @@
 package com.tiendafunciona.controller;
-
 import com.tiendafunciona.domain.Producto;
 import com.tiendafunciona.service.CategoriaService;
 import com.tiendafunciona.service.ProductoService;
@@ -19,19 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- *
- * @author Juan
- */
 @Controller
 @RequestMapping("/producto")
 public class ProductoController {
-
     @Autowired
     private ProductoService productoService;
-
     @Autowired
     private CategoriaService categoriaService;
+    @Autowired
+    private MessageSource messageSource;
     
     @GetMapping("/listado")
     public String inicio(Model model) {
@@ -42,9 +37,16 @@ public class ProductoController {
         model.addAttribute("categorias", categorias);
         return "/producto/listado";
     }
-
-    @Autowired
-    private MessageSource messageSource;
+    
+    @GetMapping("/nuevo")
+    public String nuevo(Model model) {
+        Producto producto = new Producto();
+        producto.setActivo(true);
+        model.addAttribute("producto", producto);
+        var categorias = categoriaService.getCategorias(true);
+        model.addAttribute("categorias", categorias);
+        return "/producto/modifica";
+    }
     
     @PostMapping("/guardar")
     public String guardar(@Valid Producto producto, @RequestParam MultipartFile imagenFile, RedirectAttributes redirectAttributes) {
@@ -52,7 +54,7 @@ public class ProductoController {
         redirectAttributes.addFlashAttribute("todoOk", messageSource.getMessage("mensaje.actualizado", null, Locale.getDefault()));
         return "redirect:/producto/listado";
     }
-
+    
     @PostMapping("/eliminar")
     public String eliminar(@RequestParam Integer idProducto, RedirectAttributes redirectAttributes) {
         String titulo="todoOk";
@@ -60,19 +62,19 @@ public class ProductoController {
         try {
             productoService.delete(idProducto);
         } catch (IllegalArgumentException e) {
-            titulo="error"; // Captura la excepción de argumento inválido para el mensaje de "no existe"
+            titulo="error";
             detalle="producto.error01";
         } catch (IllegalStateException e) {
-            titulo="error"; // Captura la excepción de estado ilegal para el mensaje de "datos asociados"
+            titulo="error";
             detalle="categoria.error02";
         } catch (Exception e) {
-            titulo="error"; // Captura cualquier otra excepción inesperada
+            titulo="error";
             detalle="producto.error03";
         }
         redirectAttributes.addFlashAttribute(titulo, messageSource.getMessage(detalle, null, Locale.getDefault()));
         return "redirect:/producto/listado";
     }
-
+    
     @GetMapping("/modificar/{idProducto}")
     public String modificar(@PathVariable("idProducto") Integer idProducto, Model model, RedirectAttributes redirectAttributes) {
         Optional<Producto> productoOpt = productoService.getProducto(idProducto);
@@ -85,5 +87,4 @@ public class ProductoController {
         model.addAttribute("categorias", categorias);
         return "/producto/modifica";
     }
-    
 }
