@@ -30,6 +30,13 @@
                               class='was-validated' enctype="multipart/form-data" method="post">
                             <div class="modal-body">
                                 <div class='mb-3'>
+                                    <label>[[#{producto.categoria}]]</label>
+                                    <select name="categoria.idCategoria"
+                                            class="form-select" 
+                                            aria-label="Default select example">
+                                    </select>
+                                </div>
+                                <div class='mb-3'>
                                     <label>[[#{categoria.descripcion}]]</label>
                                     <input type="text" name='descripcion' class='form-control' required="true"/></div>
                                 <div class='mb-3'>
@@ -63,6 +70,7 @@
                             <div th:if="${categorias != null and !categorias.empty}">
                                 <table class="table table-striped table-hover">
                                     <thead><tr><th>#</th>
+                                            <th>[[#{p.categoria.descripcion}]]</th>
                                             <th>[[#{categoria.descripcion}]]</th>
                                             <th>[[#{categoria.imagen}]]</th>
                                             <th>[[#{categoria.activo}]]</th>
@@ -72,6 +80,7 @@
                                     <tbody>
                                         <tr th:each="c : ${categorias}">
                                             <td>[[${c.idCategoria}]]</td>
+                                            <td>[[${c.categoria.descripcion}]]</td>
                                             <td>[[${c.descripcion}]]</td>
                                             <td><img th:src="@{${c.rutaImagen}}" alt="noData" height="75"/></td>
                                             <td th:text="${c.activo} ? 'Activa':'Inactiva'"></td>
@@ -110,7 +119,7 @@
                 <div class="col-md-8">
                     <form method="POST" th:action="@{/categoria/guardar}" 
                           th:object="${categoria}" class="was-validated" enctype="multipart/form-data">
-                        <input type="hidden" name="idCategoria" th:field="*{idCategoria}"/>
+                        <input type="hidden" name="categoria.idCategoria" th:field="*{idCategoria}"/>
                         <input type="hidden" name="rutaImagen" th:field="*{rutaImagen}"/>
                         <div class="row py-4 mb-4 bg-light">
                             <div class="col-md-4 d-grid">
@@ -127,6 +136,12 @@
                                 <div class="card">
                                     <div class="card-header"><h4>[[#{accion.actualizar}]]</h4></div>
                                     <div class="card-body">
+                                        <div class="mb-3">
+                                            <label>[[#{producto.categoria}]]</label>
+                                            <select name="categoria.idCategoria" th:field="*{categoria.idCategoria}"
+                                                    class="form-select" aria-label="Default select example">
+                                            </select>
+                                        </div>
                                         <div class="mb-3">
                                             <label for="descripcion">[[#{categoria.descripcion}]]</label>
                                             <input type="text" class="form-control" name="descripcion" 

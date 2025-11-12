@@ -1,54 +1,28 @@
 package com.tiendafunciona.domain;
+import jakarta.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+import lombok.Data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
+@Data
 @Entity
-public class Categoria {
+@Table(name = "categoria")
+public class Categoria implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_categoria")
     private Long idCategoria;
-    // ❌ ELIMINA: private String nombre;
-    private String descripcion;  // ✅ MANTÉN SOLO ESTE
+    
+    private String descripcion;
+    
+    @Column(name = "ruta_imagen", length = 1024)
     private String rutaImagen;
+    
     private boolean activo;
     
-    public Categoria() {}
-    
-    public Long getIdCategoria() { 
-        return idCategoria; 
-    }
-    
-    public void setIdCategoria(Long idCategoria) { 
-        this.idCategoria = idCategoria; 
-    }
-    
-    // ❌ ELIMINA: getNombre() y setNombre()
-    
-    public String getDescripcion() { 
-        return descripcion; 
-    }
-    
-    public void setDescripcion(String descripcion) { 
-        this.descripcion = descripcion; 
-    }
-    
-    public String getRutaImagen() { 
-        return rutaImagen; 
-    }
-    
-    public void setRutaImagen(String rutaImagen) { 
-        this.rutaImagen = rutaImagen; 
-    }
-    
-    public boolean isActivo() { 
-        return activo; 
-    }
-    
-    public void setActivo(boolean activo) { 
-        this.activo = activo; 
-    }
+    @OneToMany(mappedBy = "categoria")
+    private List<Producto> productos;
 }

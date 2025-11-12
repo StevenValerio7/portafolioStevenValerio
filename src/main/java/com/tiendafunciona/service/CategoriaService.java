@@ -1,14 +1,11 @@
 package com.tiendafunciona.service;
-
 import com.tiendafunciona.domain.Categoria;
 import com.tiendafunciona.repository.CategoriaRepository;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import com.tiendafunciona.service.FirebaseStorageService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +16,8 @@ public class CategoriaService {
     @Autowired
     private CategoriaRepository categoriaRepository;
     
-    // ✅ RUTA CORRECTA - Dentro del proyecto, en la carpeta static
-    private final String UPLOAD_DIR = "src/main/resources/static/images/categorias/";
+    @Autowired
+    private FirebaseStorageService firebaseStorageService;
     
     @Transactional(readOnly = true)
     public List<Categoria> getCategorias(boolean activo) {
@@ -31,57 +28,34 @@ public class CategoriaService {
     }
     
     @Transactional(readOnly = true)
-    public Categoria getCategoria(Categoria categoria) {
-        return categoriaRepository.findById(categoria.getIdCategoria()).orElse(null);
+    public Optional<Categoria> getCategoria(Long idCategoria) {
+        return categoriaRepository.findById(idCategoria);
     }
     
-    @Transactional
-    public void save(Categoria categoria) {
-        categoriaRepository.save(categoria);
-    }
-    
-    // MÉTODO NUEVO para guardar con imagen
     @Transactional
     public void save(Categoria categoria, MultipartFile imagenFile) {
-        if (imagenFile != null && !imagenFile.isEmpty()) {
-            try {
-                // Crear directorio si no existe
-                File uploadDir = new File(UPLOAD_DIR);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs();
-                    System.out.println("✅ Directorio creado: " + uploadDir.getAbsolutePath());
-                }
-                
-                // Generar nombre único para la imagen
-                String nombreArchivo = System.currentTimeMillis() + "_" + imagenFile.getOriginalFilename();
-                Path rutaArchivo = Paths.get(UPLOAD_DIR + nombreArchivo);
-                
-                // Guardar archivo
-                Files.write(rutaArchivo, imagenFile.getBytes());
-                
-                // ✅ IMPORTANTE: Guardar ruta relativa para que el navegador pueda acceder
-                // Esta ruta es accesible por http://localhost:9090/images/categorias/archivo.jpg
-                categoria.setRutaImagen("/images/categorias/" + nombreArchivo);
-                
-                System.out.println("✅ Imagen guardada exitosamente: " + rutaArchivo.toAbsolutePath());
-                System.out.println("✅ Ruta en BD: /images/categorias/" + nombreArchivo);
-                
-            } catch (IOException e) {
-                System.err.println("❌ Error al guardar la imagen: " + e.getMessage());
-                e.printStackTrace();
-            }
+        categoria = categoriaRepository.save(categoria);
+        if (!imagenFile.isEmpty()) { //Si no está vacío... pasaron una imagen...
+            String rutaImagen = firebaseStorageService.cargaImagen(
+                imagenFile, "categoria",
+                categoria.getIdCategoria());
+            categoria.setRutaImagen(rutaImagen);
+            categoriaRepository.save(categoria);
         }
-        categoriaRepository.save(categoria);
     }
     
     @Transactional
-    public boolean delete(Categoria categoria) {
+    public void delete(Long idCategoria) {
+        // Verifica si la categoria existe antes de intentar eliminarla
+        if (!categoriaRepository.existsById(idCategoria)) {
+            // Lanza una excepción para indicar que la categoria no fue encontrada
+            throw new IllegalArgumentException("La categoria con ID " + idCategoria + " no existe.");
+        }
         try {
-            categoriaRepository.delete(categoria);
-            categoriaRepository.flush();
-            return true;
-        } catch (Exception e) {
-            return false;
+            categoriaRepository.deleteById(idCategoria);
+        } catch (DataIntegrityViolationException e) {
+            // Lanza una nueva excepción para encapsular el problema de integridad de datos
+            throw new IllegalStateException("No se puede eliminar la categoria. Tiene productos asociados.", e);
         }
     }
 }
