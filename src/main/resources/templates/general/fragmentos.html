@@ -56,6 +56,21 @@
                                     <li><a class="dropdown-item" th:href="@{/(lang=pt)}">Portugaise</a></li>
                                 </ul>
                             </li>
+                            <li class="nav-item my-auto">
+                                <a class="nav-link">
+                                    <img th:src="@{${session.imagenUsuario}}" 
+                                         alt="your image" height="40" class="rounded-circle"/>
+                                    <span sec:authentication="name" class="ms-1"></span>
+                                </a>
+                            </li>
+                            <li class="nav-item my-auto">
+                                <form method="post" th:action="@{/logout}">
+                                    <button class="btn nav-link" type="submit">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span class="ms-1">Logout</span>
+                                    </button>
+                                </form>
+                            </li>
                         </ul>
                         <div id="resultBlock">
                         </div>
@@ -116,6 +131,4 @@
     </div>
 </section>
 </body>
-</html>
-    </body>
 </html>
