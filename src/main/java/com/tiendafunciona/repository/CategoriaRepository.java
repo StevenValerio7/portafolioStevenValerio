@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 
-    // Devuelve todas las categorías activas (activo = true)
+
     List<Categoria> findByActivoTrue();
 }

@@ -8,7 +8,7 @@ import lombok.Data;
 @Entity
 @Table(name = "rol")
 public class Rol implements Serializable {
-    // Se recomienda añadir un serialVersionUID
+
     private static final long serialVersionUID = 1L;
 
     @Id

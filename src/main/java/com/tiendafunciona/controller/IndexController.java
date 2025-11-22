@@ -1,4 +1,4 @@
-package com.tiendafunciona.controller;
+ package com.tiendafunciona.controller;
 import com.tiendafunciona.service.CategoriaService;
 import com.tiendafunciona.service.ProductoService;
 import org.springframework.stereotype.Controller;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class IndexController {
     
-    // Las últimas versiones de Spring, recomiendan utilizar final y constructor en lugar de @autowired
+
     private final ProductoService productoService;
     private final CategoriaService categoriaService;
     

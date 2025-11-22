@@ -17,8 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FirebaseStorageService {
 
-    // 🔹 Nombre del bucket en Firebase Storage (ajústalo con tu ID real)
-    // Ejemplo: "mi-proyecto-12345.appspot.com"
+  
     private final String bucketName = "tu-proyecto-id.appspot.com";
 
     // 🔹 Carpeta principal en tu bucket donde se guardarán las imágenes
@@ -30,14 +29,7 @@ public class FirebaseStorageService {
     // 🔹 Nombre del archivo JSON (sin la ruta, solo el nombre)
     private final String archivoJsonFile = "firebase-config.json";
 
-    /**
-     * Carga una imagen a Firebase Storage y devuelve su URL firmada.
-     *
-     * @param archivoLocalCliente archivo recibido del formulario
-     * @param carpeta subcarpeta dentro del bucket (por ejemplo "productos")
-     * @param id identificador del producto
-     * @return URL pública de la imagen subida
-     */
+
     public String cargaImagen(MultipartFile archivoLocalCliente, String carpeta, Long id) {
         try {
             String nombreOriginal = archivoLocalCliente.getOriginalFilename();
