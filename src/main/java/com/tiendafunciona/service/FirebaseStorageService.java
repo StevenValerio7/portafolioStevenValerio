@@ -17,28 +17,21 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FirebaseStorageService {
 
-  
     private final String bucketName = "tu-proyecto-id.appspot.com";
-
     // 🔹 Carpeta principal en tu bucket donde se guardarán las imágenes
     private final String rutaSuperiorStorage = "tiendafunciona";
-
     // 🔹 Carpeta en resources donde está el JSON de configuración
     private final String rutaJsonFile = "firebase";
-
     // 🔹 Nombre del archivo JSON (sin la ruta, solo el nombre)
     private final String archivoJsonFile = "firebase-config.json";
-
 
     public String cargaImagen(MultipartFile archivoLocalCliente, String carpeta, Long id) {
         try {
             String nombreOriginal = archivoLocalCliente.getOriginalFilename();
             String fileName = "img" + sacaNumero(id) + "_" + nombreOriginal;
-
             File file = convertToFile(archivoLocalCliente);
             String url = uploadFile(file, carpeta, fileName);
             file.delete(); // elimina el temporal
-
             return url;
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,17 +39,19 @@ public class FirebaseStorageService {
         }
     }
 
+    // Método agregado para compatibilidad con UsuarioService
+    public String uploadImage(MultipartFile file, String carpeta, Integer id) throws IOException {
+        return cargaImagen(file, carpeta, id.longValue());
+    }
+
     private String uploadFile(File file, String carpeta, String fileName) throws IOException {
         ClassPathResource json = new ClassPathResource(rutaJsonFile + File.separator + archivoJsonFile);
-
         BlobId blobId = BlobId.of(bucketName, rutaSuperiorStorage + "/" + carpeta + "/" + fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
-
         Credentials credentials = GoogleCredentials.fromStream(json.getInputStream());
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-
-        return storage.signUrl(blobInfo, 3650, TimeUnit.DAYS, 
+        return storage.signUrl(blobInfo, 3650, TimeUnit.DAYS,
                 SignUrlOption.signWith((ServiceAccountSigner) credentials)).toString();
     }
 

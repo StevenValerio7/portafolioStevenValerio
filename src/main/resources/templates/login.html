@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    
+    <head th:replace="~{general/fragmentos :: head}"/>
+    <body>
+        <header th:replace="~{general/fragmentos :: header}"/>
+        
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-success text-white text-center">
+                            <h4><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</h4>
+                        </div>
+                        <div class="card-body">
+                            
+                            <!-- Mensaje de error -->
+                            <div th:if="${param.error}" class="alert alert-danger text-center">
+                                Usuario o contraseña incorrectos
+                            </div>
+                            
+                            <!-- Mensaje de logout -->
+                            <div th:if="${param.logout}" class="alert alert-info text-center">
+                                Has cerrado sesión correctamente
+                            </div>
+                            
+                            <form th:action="@{/login}" method="post">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Usuario</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="username" name="username" 
+                                               placeholder="Ingresa tu usuario" required autofocus/>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Contraseña</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="password" name="password" 
+                                               placeholder="Ingresa tu contraseña" required/>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-sign-in-alt"></i> Ingresar
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <hr/>
+                            
+                            <div class="text-center">
+                                <a th:href="@{/registro/nuevo}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-user-plus"></i> Registrarse
+                                </a>
+                                <a th:href="@{/registro/recordar}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-key"></i> Olvidé mi contraseña
+                                </a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer th:replace="~{general/fragmentos :: footer}"/>
+    </body>
+</html>
